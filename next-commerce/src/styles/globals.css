@@ -1,0 +1,38 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.haikal {
+  padding: 18px 40px 0px;
+  display: flex;
+}
+
+.haikal div:nth-child(2) {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 15px;
+  margin: 0 18px;
+  color: #8e8e8e;
+}
+
+.haikal div:nth-child(1),
+.haikal div:nth-child(3) {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #8e8e8e;
+  position: relative;
+  top: 0.45sem;
+}

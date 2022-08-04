@@ -1,0 +1,504 @@
+import { ReactNode } from "react";
+import {
+  Box,
+  Flex,
+  Avatar,
+  HStack,
+  Link,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useDisclosure,
+  useColorModeValue,
+  Stack,
+  color,
+} from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import jsCookie from "js-cookie";
+import auth_types from "../redux/reducers/types/auth";
+
+// const SubMenu = ['Profile', 'Logout'];
+
+const NavLink = ({ children, path }) => (
+  <Link
+    px={2}
+    py={1}
+    rounded={"md"}
+    _hover={{
+      textDecoration: "none",
+      bg: useColorModeValue("white"),
+      color: "black",
+    }}
+    href={path}
+  >
+    {children}
+  </Link>
+);
+
+export default function NavbarComponent() {
+  const dispatch = useDispatch();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const authSelector = useSelector((state) => state.auth);
+
+  const SubMenu = [
+    { link: "Profile", path: "/profile", klik: undefined },
+    {
+      link: "logout",
+      path: "/",
+      klik: btnlogout,
+    },
+  ];
+
+  const Links = [
+    { link: "Home", path: "/" },
+    {
+      link: "Products",
+      path: "/profile",
+    },
+  ];
+
+  function btnlogout() {
+    jsCookie.remove("auth_token");
+
+    dispatch({
+      type: auth_types.AUTH_LOGOUT,
+    });
+  }
+
+  return (
+    <>
+      <Box bg={useColorModeValue("black")} color="white" px={4}>
+        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+          <IconButton
+            size={"md"}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label={"Open Menu"}
+            display={{ md: "none" }}
+            onClick={isOpen ? onClose : onOpen}
+          />
+          <HStack spacing={8} alignItems={"center"}>
+            <HStack
+              as={"nav"}
+              spacing={4}
+              display={{ base: "none", md: "flex" }}
+            >
+              {Links.map((val) => (
+                <NavLink key={val} path={val.path}>
+                  {val.link}
+                </NavLink>
+              ))}
+            </HStack>
+          </HStack>
+
+          {authSelector?.id ? (
+            <Flex alignItems={"center"}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={"full"}
+                  variant={"link"}
+                  cursor={"pointer"}
+                  minW={0}
+                >
+                  <Avatar
+                    size={"sm"}
+                    src={
+                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                    }
+                  />
+                </MenuButton>
+                <MenuList bg="black">
+                  {" "}
+                  {SubMenu.map((val) => (
+                    <MenuItem onClick={val.klik}>{val.link}</MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            </Flex>
+          ) : (
+            <HStack
+              as={"nav"}
+              spacing={4}
+              display={{ base: "none", md: "flex" }}
+            >
+              <NavLink key="Login" path="/auth/login">
+                Login
+              </NavLink>
+            </HStack>
+          )}
+        </Flex>
+
+        {/* {isOpen ? (
+          <Box pb={4} display={{ md: 'none' }}>
+            <Stack as={'nav'} spacing={4}>
+              {Links.map((link) => (
+                <NavLink key={link}>{link}</NavLink>
+              ))}
+            </Stack>
+          </Box>
+        ) : null} */}
+      </Box>
+
+      {/* <Box p={4}>Main Content Here</Box> */}
+    </>
+  );
+}
+
+// import {
+//   Button,
+//   Flex,
+//   FormControl,
+//   FormLabel,
+//   Heading,
+//   Input,
+//   Stack,
+//   useColorModeValue,
+//   HStack,
+//   Avatar,
+//   AvatarBadge,
+//   IconButton,
+//   Center,
+//   Grid,
+//   GridItem,
+// } from "@chakra-ui/react";
+// import { SmallCloseIcon } from "@chakra-ui/icons";
+// import NavbarComponent from "../../components/Navbar";
+// import { useSelector } from "react-redux";
+
+// export default function UserProfileEdit() {
+//   const userSelector = useSelector((state) => state.auth);
+//   return (
+//     <>
+//       <NavbarComponent />
+//       <Flex
+//         minH={"100vh"}
+//         align={"center"}
+//         justify={"center"}
+//         bg={useColorModeValue("gray.50", "gray.800")}
+//       >
+//         <Grid
+//           h="200px"
+//           templateRows="repeat(2, 1fr)"
+//           templateColumns="repeat(5, 1fr)"
+//           gap={4}
+//         >
+//           <GridItem rowSpan={2} colSpan={1} bg="tomato" />
+//           <GridItem colSpan={2} bg="papayawhip" />
+//           <GridItem colSpan={2} bg="papayawhip" />
+//           <GridItem colSpan={4} bg="tomato" />
+//         </Grid>
+//         Profile
+//       </Flex>
+//     </>
+//   );
+// }
+
+import { Avatar, Box, Divider, Link, Text } from "@chakra-ui/react";
+
+export default function PeopleLikes(props) {
+  const { Username, Fullname, slImg_Url, UserId } = props;
+  return (
+    <Box>
+      <Box display="flex">
+        <Avatar size="md" name="haikal rizqi" />
+        <Box ml="40px">
+          <Link
+            href={"/contentcard/" + props.slUserId}
+            style={{ textDecoration: "none" }}
+          >
+            <Text _hover={{ color: "teal.500" }} fontWeight="bold">
+              {props.slUsername}
+            </Text>
+          </Link>
+          <Text fontWeight="semibold">{props.slFullname}</Text>
+        </Box>
+      </Box>
+      <Divider my="10px" />
+    </Box>
+  );
+}
+
+// contentcard copy 
+import { useState, useEffect } from "react";
+import {
+  Icon,
+  Button,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Image,
+  useToast,
+} from "@chakra-ui/react";
+import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
+// import Comment from "./comment";
+import axios from "axios";
+import honduras from "../public/honduras-city.png";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import PeopleLikes from "./likes";
+import { Box, Avatar, Text, Divider, Link } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+import { axiosInstance } from "../lib/api";
+import qs from "qs";
+import moment from "moment";
+
+// import testing from "assets/images/mobil.jpg";
+
+function ContentCard(props) {
+  const [comments, setComments] = useState([]);
+  const [displayCommentInput, setDisplayCommentInput] = useState(false);
+  const [isLike, setIsLike] = useState(props.liked);
+  const [likes, setLikes] = useState(props.likes);
+  const toast = useToast();
+  const [commentInput, setCommentInput] = useState("");
+
+  const userSelector = useSelector((state) => state.auth);
+  // console.log("contentCard");
+  // console.log(userSelector);
+  const fetchComments = () => {
+    axiosInstance
+      .get(`/comments`, {
+        params: {
+          PostId: props.id,
+          limit: 5,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.result);
+        setComments(res.data.result);
+      });
+  };
+  const handleCommentInput = (event) => {
+    const { value } = event.target;
+
+    setCommentInput(value);
+  };
+
+  const handleLike = async () => {
+    console.log(userSelector.id);
+    let body = {
+      PostId: props.id,
+      UserId: userSelector.id,
+    };
+    await axiosInstance.post("/likes", qs.stringify(body)).then((res) => {
+      // setComments(res.data);
+      console.log("handleLike");
+      console.log(res.data);
+    });
+    setIsLike(!isLike);
+  };
+
+  const postNewComment = async () => {
+    // const formData = new FormData();
+    // const { caption, location } = formik.values;
+
+    // formData.append("UserId", userSelector.id);
+    // formData.append("PostId", props.id);
+    // formData.append("content", commentInput);
+
+    const formData = {
+      UserId: userSelector.id,
+      PostId: props.id,
+      content: commentInput,
+    };
+
+    try {
+      console.log(formData);
+      await axiosInstance.post("/comments", formData).then(() => {
+        setCommentInput("");
+        toast({
+          title: "comment has been added",
+          status: "success",
+          isCloseable: true,
+        });
+      });
+    } catch (err) {
+      console.log(err);
+
+      toast({
+        title: "ERROR",
+        status: "error",
+        isCloseable: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    // fetchComments();
+  }, []);
+
+  async function deletepost() {
+    await axiosInstance.delete(`/posts/${props.id}`);
+  }
+
+  return (
+    <Box
+      borderWidth="1px"
+      bg="#ffffff"
+      borderRadius="lg"
+      maxW="lg"
+      paddingY="2"
+      marginX="10px"
+      mb="15px"
+    >
+      {/* Card Header */}
+      <Box
+        paddingX="3"
+        paddingBottom="2"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Box display="flex">
+          <Avatar
+            src="https://cdn130.picsart.com/267150989005201.jpg"
+            size="md"
+          />
+          <Box marginLeft="2">
+            <Text fontSize="md" fontWeight="bold">
+              {props.username}
+            </Text>
+            <Text fontSize="sm" color="GrayText">
+              {props.location}
+            </Text>
+          </Box>
+        </Box>
+        <Box>
+          <Box minW={"10px"} ml={"center"}>
+            <Menu ml={"center"}>
+              <MenuButton>
+                <BsThreeDotsVertical />
+              </MenuButton>
+              <MenuList>
+                <a>
+                  <MenuItem>Edit Post</MenuItem>
+                </a>
+                <MenuItem>Save Post</MenuItem>
+                <MenuItem onClick={deletepost}>Delete Post</MenuItem>
+              </MenuList>
+            </Menu>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Card Media/Content */}
+      {/* <Image src={props.img} alt="err" /> */}
+      <Image src={props.img} alt="asa"></Image>
+      {/* Action Buttons */}
+      <Box paddingX="3" paddingY="2" display="flex" alignItems="center">
+        {isLike ? (
+          <Icon
+            boxSize={6}
+            as={FaHeart}
+            onClick={() => {
+              handleLike();
+              setLikes(likes - 1);
+            }}
+          />
+        ) : (
+          <Icon
+            boxSize={6}
+            as={FaRegHeart}
+            onClick={() => {
+              handleLike();
+              setLikes(likes + 1);
+            }}
+          />
+        )}
+        <Icon
+          onClick={() => setDisplayCommentInput(true)}
+          marginLeft="4"
+          boxSize={6}
+          as={FaRegComment}
+          sx={{
+            _hover: {
+              cursor: "pointer",
+            },
+          }}
+        />
+      </Box>
+
+      {/* Like Count */}
+      <Box paddingX="3">
+        <Text fontWeight="bold">{likes} likes</Text>
+      </Box>
+      <Text fontWeight="bold" fontSize="xs" textColor="gray.500">
+        {moment(props.createdDate).fromNow()}
+      </Text>
+
+      {/* Caption */}
+      <Box paddingX="3">
+        <Text display="inline" fontWeight="bold" marginRight="2">
+          {props.username}
+        </Text>
+        <Text display="inline">{props.caption}</Text>
+      </Box>
+      <Divider my={"10px"}></Divider>
+      {/* Comment Section */}
+      <Box paddingX="3">
+        {/* <Text fontWeight="bold" decoration="underline" marginBottom="2">
+          city onfroy
+        </Text> */}
+        {comments.length > 0 &&
+          comments.map((comment) => (
+            <Box>
+              <Text display="inline" fontWeight="bold" marginRight="2">
+                {comment.User.username}
+              </Text>
+              <Text display="inline">{comment.content}</Text>
+            </Box>
+          ))}
+        {/* Comment Input */}
+        {displayCommentInput ? (
+          <Box display="flex">
+            <Input
+              value={commentInput}
+              onChange={handleCommentInput}
+              marginBottom="2"
+              type="text"
+              placeholder="Insert a new comment"
+              marginRight="4"
+            />
+            <Button onClick={postNewComment} colorScheme="green">
+              Post
+            </Button>
+          </Box>
+        ) : null}
+
+        {/* Comment */}
+        {comments.length === 0 ? (
+          <Button onClick={fetchComments} size="xs">
+            Fetch Comments
+          </Button>
+        ) : (
+          <Button size={"xs"} my="10px">
+            seemore
+          </Button>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
+export default ContentCard; 
+
+
+1. throttle registration: if (formik) pakai disable 
+2. Display proper error messages when password is incorrect: jika sallah pass di login gabisa masuk log in 
+3. user harus di verification terlebih dahulu jika tidak, akan ada fiture yang tidak bisa digunakan 
+4 tombol resend verification untuk si user 
+5. user profilling: display users information, edit users information  
+6. post detail 
+7. infinite scroll  
+
+// user selector
+              punyanya avatar (user selector nya harus dimasukin ke dallam
+              redux)
+
